@@ -28,10 +28,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-    'api',
-    'users',
+    'import_export',
     'django_filters',
     'drf_yasg'
+    # Пользовательские
+    'api',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -72,8 +74,12 @@ WSGI_APPLICATION = 'web_study.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('DB_NAME', 'postgres'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DB_HOST', 'db'),
+        'PORT': os.environ.get('DB_PORT', '5432')
     }
 }
 
@@ -148,3 +154,7 @@ DJOSER = {
         "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
     },
 }
+
+# Celery settings
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")

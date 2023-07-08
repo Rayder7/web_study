@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13.0-alpine
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    enviroment:
+      - DB_ENGINE:django.db.backends.postgresql
+      - DB_NAME:postgres
+      - POSTGRES_USER:postgres
+      - POSTGRES_PASSWORD:postgres
+      - DB_HOST:db
+      - DB_PORT:5432
+    container_name: web_study_db
+  
+  redis:
+    image: redis:5-alpine
+    container_name: web_study_redis
+  
+  backend:
+    image: rayder7/foodgram-backend:latest
+    restart: always
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
+    depends_on:
+      - db
+    enviroment:
+      - DB_ENGINE:django.db.backends.postgresql
+      - DB_NAME:postgres
+      - POSTGRES_USER:postgres
+      - POSTGRES_PASSWORD:postgres
+      - DB_HOST:db
+      - DB_PORT:5432
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    container_name: web_study_backend
+  
+  celery:
+      build: ./web_study
+      command: celery worker --app=core --loglevel=info
+      volumes:
+        - ./web_study:/app/
+      environment:
+        - CELERY_BROKER=redis://redis:6379/0
+        - CELERY_BACKEND=redis://redis:6379/0
+      depends_on:
+        - backend
+      container_name: web_study_celery
+
+  dashboard:
+    build: ./web_study
+    command:  flower -A core --port=5555 --broker=redis://redis:6379/0
+    ports:
+      - 5555:5555
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+      - celery
+    container_name: web_study_flower
+
+  nginx:
+    image: nginx:1.19.3
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
+    depends_on:
+      - dashboard
+    container_name: web_study_nginx
+
+volumes:
+  static_value:
+  media_value:
+  db_data:
+  result_build:
