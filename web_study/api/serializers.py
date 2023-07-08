@@ -1,10 +1,10 @@
 import djoser.serializers
-
+from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import get_user_model
-from models import (Student, Curator, StudyGroup,
-                    StudyGroupStudents, Discipline,
-                    FieldStudy, FieldStudyDisciplines)
+from api.models import (Student, Curator, StudyGroup,
+                        StudyGroupStudents, Discipline,
+                        FieldStudy, FieldStudyDisciplines)
 
 User = get_user_model()
 
@@ -48,10 +48,10 @@ class CuratorSerializer(serializers.ModelSerializer):
 
 
 class StudyGroupSerializer(serializers.ModelSerializer):
-    students_count = SerializerMethodField()
-    free_place_group_count = SerializerMethodField()
-    man_count = SerializerMethodField()
-    woman_count = SerializerMethodField()
+    students_count = serializers.SerializerMethodField()
+    free_place_group_count = serializers.SerializerMethodField()
+    man_count = serializers.SerializerMethodField()
+    woman_count = serializers.SerializerMethodField()
 
     class Meta:
         fields = ("id", "course", "number", "students",

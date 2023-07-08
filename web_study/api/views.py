@@ -1,16 +1,19 @@
 from djoser.views import UserViewSet
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from tasks import make_excel_task
+#from api.tasks import make_excel_task
 from users.models import User
-from permissions import CuratorPermission
+from api.permissions import CuratorPermission
 from api.serializers import (UserSerializer, StudentSerializer,
                              CuratorSerializer, StudyGroupSerializer,
-                             DiplineSerializer, FieldStudySerializer)
+                             DisciplineSerializer, FieldStudySerializer)
+from api.models import (Student, Curator, StudyGroup,
+                        Discipline,
+                        FieldStudy)
 
 
 class UserViewSet(UserViewSet):
@@ -62,9 +65,9 @@ class FieldStudyViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
 
-class GetExcelFiles(APIView):
+""" class GetExcelFiles(APIView):
     def post(self, request):
         if request.user.is_staff == True:
             make_excel_task.apply_asunc()
             return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST) """

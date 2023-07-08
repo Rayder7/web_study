@@ -1,8 +1,11 @@
 from django.contrib import admin
 from import_export import resources
-from models import (Student, Curator,
-                    StudyGroup, Discipline,
-                    FieldStudy,)
+from import_export.fields import Field
+from import_export.widgets import ManyToManyWidget
+
+from api.models import (Student, Curator,
+                        StudyGroup, Discipline,
+                        FieldStudy,)
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -56,6 +59,7 @@ class FieldStudyAdmin(admin.ModelAdmin):
     ordering = ('name',)
     empty_value_display = '-пусто-'
 
+
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Curator, CuratorAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
@@ -63,28 +67,31 @@ admin.site.register(StudyGroup, StudyGroupAdmin)
 admin.site.register(FieldStudy, FieldStudyAdmin)
 
 
-class FieldStudyResource(resources.ModelResourse):
-    disciplines = fields.Field(
+class FieldStudyResource(resources.ModelResource):
+    disciplines = Field(
         column_name='disciplines',
         attribute='disciplines',
-        widget=widgets.ManyToManyWidget(
+        widget=ManyToManyWidget(
             Discipline, field='name', separator=','
         )
     )
+
     class Meta:
         model = FieldStudy
         fields = ("id", "name", "disciplines", "curator",)
 
-class StudyGroupResource(resources.ModelResourse):
-    Students = fields.Field(
+
+class StudyGroupResource(resources.ModelResource):
+    Students = Field(
         column_name='students',
         attribute='students',
-        widget=widgets.ManyToManyWidget(
+        widget=ManyToManyWidget(
             Student, field='last_name', separator=','
         )
     )
+
     class Meta:
         model = StudyGroup
         fields = ('number', 'course', 'students',
-        'students_count', 'free_place_group_count',
-        'man_count', 'woman_count',)
+                  'students_count', 'free_place_group_count',
+                  'man_count', 'woman_count',)

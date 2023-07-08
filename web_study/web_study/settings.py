@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'djoser',
     'import_export',
     'django_filters',
-    'drf_yasg'
+    'drf_yasg',
     # Пользовательские
     'api',
     'users',

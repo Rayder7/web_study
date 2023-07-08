@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class Student(models.Model):
     class Sex(models.TextChoices):
         MAN = "MAN"
@@ -12,7 +13,7 @@ class Student(models.Model):
     last_name = models.CharField('Фамилия', max_length=50)
     sur_name = models.CharField('Отчество', max_length=50)
     sex = models.CharField(
-        choises=Sex.choises,
+        choices=Sex.choices,
         default=Sex.MAN,
         max_length=5
     )
@@ -44,11 +45,21 @@ class StudyGroup(models.Model):
 
 
 class StudyGroupStudents(models.Model):
-    study_group = models.ForeignKey(StudyGroup, on_delete = models.CASCADE)
-    student = models.ForeignKey(Student, on_delete = models.CASCADE)
+    study_group = models.ForeignKey(StudyGroup, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f"{self.study_group} + {self.student} "
+
+
+class Curator(User):
+
+    class Meta:
+        verbose_name = 'Куратор'
+        verbose_name_plural = 'Кураторы'
+
+    def __str__(self) -> str:
+        return self.username
 
 
 class Discipline(models.Model):
@@ -56,7 +67,6 @@ class Discipline(models.Model):
         max_length=150,
         unique=True,
     )
-    field_study = models.ForeignKey(FieldStudy, on_delete = models.CASCADE)
 
     class Meta:
         verbose_name = 'Учебная дисциплина'
@@ -76,7 +86,7 @@ class FieldStudy(models.Model):
         verbose_name='Учебная дисциплина',
         related_name='fieldstudies'
     )
-    curator = models.ForeignKey(Curator, on_delete = models.CASCADE)
+    curator = models.ForeignKey(Curator, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Направление подготовки'
@@ -84,19 +94,8 @@ class FieldStudy(models.Model):
 
 
 class FieldStudyDisciplines(models.Model):
-    field_study = models.ForeignKey(FieldStudy, on_delete = models.CASCADE)
-    discipline = models.ForeignKey(Discipline, on_delete = models.CASCADE)
+    field_study = models.ForeignKey(FieldStudy, on_delete=models.CASCADE)
+    discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f"{self.field_study} + {self.discipline} "
-
-
-class Curator(User):
-    field_study = models.ForeignKey(FieldStudy, on_delete = models.CASCADE)
-
-    class Meta:
-        verbose_name = 'Куратор'
-        verbose_name_plural = 'Кураторы'
-
-    def __str__(self) -> str:
-        return self.username

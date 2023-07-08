@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 from api.views import (UserViewSet, StudentViewSet,
                        CuratorViewSet, DisciplineViewSet,
                        StudyGroupViewSet, FieldStudyViewSet,
-                       GetExcelFiles)
+                       #GetExcelFiles
+                       )
 
 app_name = 'api'
 
@@ -20,5 +21,5 @@ urlpatterns = [
     path('', include(router_v1.urls)),
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
-    path('get_excel/', GetExcelFiles.as_view()),
+    #path('get_excel/', GetExcelFiles.as_view()),
 ]
