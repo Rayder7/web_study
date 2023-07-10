@@ -31,9 +31,10 @@ class StudyGroup(models.Model):
     number = models.IntegerField('Номер группы')
     course = models.SmallIntegerField('год обучения')
     students = models.ManyToManyField(
-        Student, through='StudyGroupStudents',
+        Student,
         verbose_name='Студенты',
-        related_name='studygroups'
+        related_name='studygroups',
+        blank=True
     )
 
     class Meta:
@@ -42,14 +43,6 @@ class StudyGroup(models.Model):
 
     def __str__(self) -> str:
         return self.username
-
-
-class StudyGroupStudents(models.Model):
-    study_group = models.ForeignKey(StudyGroup, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f"{self.study_group} + {self.student} "
 
 
 class Curator(User):
@@ -82,20 +75,13 @@ class FieldStudy(models.Model):
         unique=True,
     )
     disciplines = models.ManyToManyField(
-        Discipline, through='StudyGroupStudents',
+        Discipline,
         verbose_name='Учебная дисциплина',
-        related_name='fieldstudies'
+        related_name='fieldstudies',
+        blank=True
     )
     curator = models.ForeignKey(Curator, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Направление подготовки'
         verbose_name_plural = 'Направления подготовки'
-
-
-class FieldStudyDisciplines(models.Model):
-    field_study = models.ForeignKey(FieldStudy, on_delete=models.CASCADE)
-    discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f"{self.field_study} + {self.discipline} "

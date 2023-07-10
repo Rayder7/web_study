@@ -20,29 +20,25 @@ class StudentAdmin(admin.ModelAdmin):
 
 class CuratorAdmin(admin.ModelAdmin):
     list_display = (
-        'first_name', 'last_name', 'field_study',
+        'first_name', 'last_name',
     )
     search_fields = ('last_name',)
-    list_filter = ('field_study',)
     ordering = ('last_name',)
     empty_value_display = '-пусто-'
 
 
 class DisciplineAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'field_study'
+        'name',
     )
     search_fields = ('name',)
-    list_filter = ('field_study',)
     ordering = ('-id',)
     empty_value_display = '-пусто-'
 
 
 class StudyGroupAdmin(admin.ModelAdmin):
     list_display = (
-        'number', 'course', 'students',
-        'students_count', 'free_place_group_count',
-        'man_count', 'woman_count'
+        'number', 'course'
     )
     search_fields = ('number',)
     list_filter = ('number', 'course')
@@ -52,8 +48,9 @@ class StudyGroupAdmin(admin.ModelAdmin):
 
 class FieldStudyAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'disciplines', 'curator',
+        'name', 'curator',
     )
+
     search_fields = ('name',)
     list_filter = ('curator',)
     ordering = ('name',)
